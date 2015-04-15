@@ -13,13 +13,11 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
 [Rr]eleases/
 x64/
 x86/
 build/
 bld/
-[Bb]in/
 [Oo]bj/
 
 # Visual Studo 2015 cache/options directory
@@ -37,6 +35,8 @@ TestResult.xml
 [Dd]ebugPS/
 [Rr]eleasePS/
 dlldata.c
+
+*.exe.config
 
 *_i.c
 *_p.c
