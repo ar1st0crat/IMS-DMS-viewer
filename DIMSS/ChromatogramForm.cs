@@ -15,14 +15,18 @@ namespace DIMSS
     public partial class ChromatogramForm : Form
     {
         // TODO: refactor. This component is no longer needed (seems like it can't decompress mz-spectral data).
-        // We can use simple XmlReader / XmlDocument instead. However, currently we use some of its features
+        // We can use simple XmlReader / XmlDocument instead. However, currently we use some of MSDataFileReader.clsMzXMLFileAccessor features
         private MSDataFileReader.clsMzXMLFileAccessor mzXMLParser = new MSDataFileReader.clsMzXMLFileAccessor();
 
         // we start with the spectrum #1. The scan #0 contains metainfo
         private int curMzSpectrum = 1;
 
 
-        // helping function : decompress a byte array compressed with zlib (mzXML 3.0 format!)
+        /// <summary>
+        /// helping function : decompress a byte array compressed with zlib (mzXML 3.0 format!) 
+        /// </summary>
+        /// <param name="source">A byte array compressed with zlib</param>
+        /// <returns>Decompressed byte array</returns>
         public static byte[] DecompressZlib(Stream source)
         {
             byte[] result = null;
@@ -66,7 +70,11 @@ namespace DIMSS
         }
 
 
-        // parse the region of an mzxml file corresponding to the spectrum with scanId = idx
+        /// <summary>
+        /// parse the region of an mzxml file corresponding to the spectrum with scanId = <paramref name="idx"/> 
+        /// </summary>
+        /// <param name="idx">ScanID (scan index)</param>
+        /// <returns>MZ spectrum by the specified ScanId</returns>
         private MZSpectrum GetMZSpectrumByIndex( int idx )
         {
             MZSpectrum spec = new MZSpectrum();
@@ -118,67 +126,11 @@ namespace DIMSS
 
         // optional procedure - map the value onto RGB-scale for plotting;
         // value is given between 0 and 1 (percent)   
-        Color GetRGBColor( double value )
+        private Color GetRGBColor( double value )
         {
-            value *= 100;
+            int intvalue = (int)( value * 0xFFFFFF );
 
-            double Red = 0, Green = 0, Blue = 0;
-
-            if (value <= 66)
-            {
-                Red = 255;
-            }
-            else
-            {
-                Red = value - 60;
-                Red = 329.698727446 * Math.Pow( Red, -0.1332047592 );
-                if (Red < 0)
-                    Red = 0;
-                if (Red > 255)
-                    Red = 255;
-            }
-    
-            if (value <= 66)
-            {
-                Green = value;
-                Green = 99.4708025861 * Math.Log( Green + 1 ) - 161.1195681661;
-                if ( Green < 0 )
-                    Green = 0;
-                if ( Green > 255 )
-                    Green = 255;
-            }
-            else
-            {
-                Green = value - 60;
-                Green = 288.1221695283 * Math.Pow( Green, -0.0755148492 );
-                if ( Green < 0 )
-                    Green = 0;
-                if ( Green > 255 )
-                    Green = 255;
-            }
-   
-            if ( value >= 66 )
-            {
-                Blue = 255;
-            }
-            else
-            {
-                if (value <= 19)
-                {
-                    Blue = 0;
-                }
-                else
-                {
-                    Blue = value - 10;
-                    Blue = 138.5177312231 * Math.Log(Blue) - 305.0447927307;
-                    if ( Blue < 0 )
-                        Blue = 0;
-                    if ( Blue > 255 )
-                        Blue = 255;
-                }
-            }
-    
-            return Color.FromArgb( (int)Red, (int)Green, (int)Blue );
+            return Color.FromArgb( (intvalue & 0xFF0000) >> 16, (intvalue & 0xFF00) >> 8, intvalue & 0xFF);
         }
 
         

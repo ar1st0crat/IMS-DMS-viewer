@@ -25,6 +25,9 @@ namespace DIMSS
      *  This version of DIMSS deals with constant spectrum dimension which we define in SPECSIZE
      */
     
+    /// <summary>
+    /// Main form class
+    /// </summary>
     public partial class MainForm : Form
     {
         private const int SPECSIZE = 2048;                                  // by default the size of a spectrum is 2^11 = 2048 samples
@@ -52,7 +55,10 @@ namespace DIMSS
         }
 
 
-        // fix the dims spectrum: invert the sign of corrupted samples
+        /// <summary>
+        // fix the dims spectrum: invert the sign of corrupted samples 
+        /// </summary>
+        /// <param name="spectrum">DIMS spectrum list</param>
         private void FixSpectrum( List<int> spectrum )
         {
             for (int i = 1; i < spectrum.Count; i++)
@@ -65,7 +71,10 @@ namespace DIMSS
         }
 
 
-        // iterate across the files in a given directory
+        /// <summary>
+        /// iterate across the files in a given directory 
+        /// </summary>
+        /// <param name="dir">Directory name</param>
         private void FileWalk(string dir)
         {
             // FILTER CSV: 
