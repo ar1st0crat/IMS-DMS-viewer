@@ -72,25 +72,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChromatogramForm.cs">
+    <Compile Include="Models\ChromatogramModel.cs" />
+    <Compile Include="Models\DMSModel.cs" />
+    <Compile Include="Forms\ChromatogramForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChromatogramForm.Designer.cs">
+    <Compile Include="Forms\ChromatogramForm.Designer.cs">
       <DependentUpon>ChromatogramForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MZSpectrum.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ChromatogramForm.resx">
+    <EmbeddedResource Include="Forms\ChromatogramForm.resx">
       <DependentUpon>ChromatogramForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

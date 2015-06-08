@@ -5,10 +5,10 @@ using System.Text;
 
 namespace DIMSS
 {
-    class MZSpectrum
+    public class MZSpectrum
     {
-        public double[] MZList;
-        public double[] intensityList;
+        public double[] MZList { set; get; }
+        public double[] IntensityList { set; get; }
 
         public MZSpectrum()
         {

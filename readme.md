@@ -1,4 +1,20 @@
-﻿> DIMSS
+[English]
+> The IMS-DMS-Viewer program is intended for analytical chemists and data-mining specialists in respective field. The main purpose of this tool is visualiazing, visual analyzing and comparing ion mobility spectra (IMS and DMS) of various chemical compounds. Repository also contains the python script for automatic finding of local peaks in DMS spectra.
+
+Main features of the program are:
+- automatic loading and parsing of all csv-files with DMS spectral data and measurement parameters from any given directory on the researcher's computer (the "Add Directory..." menu entry). The program also automatically finds and parses all files in the first level subfolders of the given folder.
+- automatic removing of the "Sign Bit Artifact" in DMS spectra
+- visualization of DMS-spectra and measurement parameters in the listview and charts with choice options for the chart style (line plot, bar plot, point plot)
+- the capability of choosing the custom combination of spectra from the entire set of spectra
+- automatic parsing of measurement parameters and scale fitting while simultaneous work with several spectra
+- visualization of IMS chromatograms(the program works with the files of mzXml format)
+
+![pic1](https://github.com/ar1st0crat/IMS-DMS-viewer/blob/master/screenshots/1.png)
+![pic2](https://github.com/ar1st0crat/IMS-DMS-viewer/blob/master/screenshots/2.png)
+
+<br/>
+[Russian]<br/>
+> DIMSS
 Программа служит для визуализации и исследования спектров ионной мобильности (IMS-хроматограмм и DMS).
 
 Возможности программы:
