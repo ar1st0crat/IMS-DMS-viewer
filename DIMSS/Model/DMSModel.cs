@@ -5,7 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 
 
-namespace DIMSS
+namespace DIMSS.Model
 {
     /*
      * The CSV file structure should be as follows:
@@ -30,41 +30,31 @@ namespace DIMSS
 
         // here we store measurement parameters
         private List<string> measureParams = new List<string>();
+        public List<string> MeasureParams
+        {
+            get { return measureParams; }
+        }
 
         // here we store all our spectra (vector of vectors)
         private List<List<int>> spectra = new List<List<int>>();
-
-        // here we store x-coordinates of spectral points (in some cases they're not given)
-        private List<List<float>> spectralPoints = new List<List<float>>();    
-
-
-        public DMSModel()
-        {
-        }
-
-
-        #region properties
-
         public List<List<int>> Spectra
         {
-            set { spectra = value; }
             get { return spectra; }
         }
 
+        // here we store x-coordinates of spectral points (in some cases they're not given)
+        private List<List<float>> spectralPoints = new List<List<float>>();
         public List<List<float>> SpectralPoints
         {
-            set { spectralPoints = value; }
             get { return spectralPoints; }
         }
-
-        #endregion
-
+       
 
         /// <summary>
         // Fix the dims spectrum: invert the sign of corrupted samples 
         /// </summary>
         /// <param name="spectrum">DIMS spectrum list</param>
-        private void FixSpectrum(List<int> spectrum)
+        public void FixSpectrum(List<int> spectrum)
         {
             for (int i = 1; i < spectrum.Count; i++)
             {
@@ -187,18 +177,18 @@ namespace DIMSS
         public void ParseMeasureParams( int nSpectrum, ref float fromV, ref float toV )
         {
             // parse measureParams using RegExp
-            var col = Regex.Matches( measureParams[nSpectrum], @"(?<key>\s*\w+[,.]*\w+\s*)=(?<val>\s*\d*[,.]?\d+\s*)" );
+            var col = Regex.Matches( measureParams[nSpectrum], @"(?<key>\s*\w+[,\.]*\w+\s*)=(?<val>\s*\d*[,\.]?\d+\s*)" );
 
             foreach (Match m in col)
             {
                 if (m.Groups["key"].Value.Contains("From,V"))
                 {
-                    fromV = float.Parse(m.Groups["val"].Value);
+                    fromV = float.Parse(m.Groups["val"].Value.Replace('.', ','));
                 }
 
                 if (m.Groups["key"].Value.Contains("To,V"))
                 {
-                    toV = float.Parse(m.Groups["val"].Value);
+                    toV = float.Parse(m.Groups["val"].Value.Replace('.', ','));
                 }
             }
         }

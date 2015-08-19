@@ -1,4 +1,4 @@
-﻿namespace DIMSS
+﻿namespace DIMSS.View
 {
     partial class MainForm
     {

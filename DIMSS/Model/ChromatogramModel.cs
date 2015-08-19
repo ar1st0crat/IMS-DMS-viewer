@@ -5,7 +5,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 
-namespace DIMSS
+namespace DIMSS.Model
 {
     public class ChromatogramModel
     {
@@ -13,23 +13,17 @@ namespace DIMSS
         // We can use simple XmlReader / XmlDocument instead. However, currently we use some of MSDataFileReader.clsMzXMLFileAccessor features
         private MSDataFileReader.clsMzXMLFileAccessor mzXMLParser = new MSDataFileReader.clsMzXMLFileAccessor();
 
-        // we start with the spectrum #1. The scan #0 contains metainfo
-        private int curMzSpectrum = 1;
+        // We start with the spectrum #1. The scan #0 contains metainfo
+         private int curMzSpectrum = 1;
+         public int CurrentMZSpectrum
+         {
+             set { curMzSpectrum = value; }
+             get { return curMzSpectrum; }
+         }
 
-        //
+        // Message to show when datafile was loaded succesfully
         public const string LOAD_RESULT_OK = "mzXml file loaded OK";
-
-
-        public ChromatogramModel()
-        {
-        }
-
-        public int CurrentMZSpectrum
-        {
-            set { curMzSpectrum = value; }
-            get { return curMzSpectrum; }
-        }
-
+        
 
         /// <summary>
         /// Close the file we were parsing
@@ -133,7 +127,7 @@ namespace DIMSS
 
         public MZSpectrum GetCurrentMZSpectrum()
         {
-            return GetMZSpectrumByIndex( curMzSpectrum );
+            return GetMZSpectrumByIndex( CurrentMZSpectrum );
         }
 
 

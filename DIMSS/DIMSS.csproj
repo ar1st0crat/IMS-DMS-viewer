@@ -72,27 +72,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ChromatogramModel.cs" />
-    <Compile Include="Models\DMSModel.cs" />
-    <Compile Include="Forms\ChromatogramForm.cs">
+    <Compile Include="Model\ChromatogramModel.cs" />
+    <Compile Include="Model\DMSModel.cs" />
+    <Compile Include="View\ChromatogramForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ChromatogramForm.Designer.cs">
+    <Compile Include="View\ChromatogramForm.Designer.cs">
       <DependentUpon>ChromatogramForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MainForm.cs">
+    <Compile Include="View\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
+    <Compile Include="View\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MZSpectrum.cs" />
+    <Compile Include="Model\MZSpectrum.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\ChromatogramForm.resx">
+    <EmbeddedResource Include="View\ChromatogramForm.resx">
       <DependentUpon>ChromatogramForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainForm.resx">
+    <EmbeddedResource Include="View\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

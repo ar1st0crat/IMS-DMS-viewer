@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DIMSS.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 
-namespace DIMSS
+namespace DIMSS.View
 {
     public partial class ChromatogramForm : Form
     {
@@ -17,6 +18,9 @@ namespace DIMSS
             InitializeComponent();
         }
         
+        /// <summary>
+        /// Single-threaded loading. Just wait until entire file is loaded and chart is updated
+        /// </summary>
         private void ChromatogramForm_Load(object sender, EventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
@@ -48,7 +52,7 @@ namespace DIMSS
 
             if ( model.ScanCount() <= 0 )
             {
-                MessageBox.Show( "No spectral information in specified file!" );
+                MessageBox.Show( "No spectral information in given file!" );
                 return false;
             }
 

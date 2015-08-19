@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DIMSS.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 
-namespace DIMSS
+namespace DIMSS.View
 {
     /// <summary>
     /// Main form (DMS visualizer) class
