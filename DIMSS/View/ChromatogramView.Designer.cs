@@ -1,6 +1,6 @@
 ﻿namespace DIMSS.View
 {
-    partial class ChromatogramForm
+    partial class ChromatogramView
     {
         /// <summary>
         /// Требуется переменная конструктора.

@@ -1,22 +1,22 @@
-﻿using DIMSS.View;
+﻿using DIMSS.Presenter;
+using DIMSS.View;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace DIMSS
 {
     static class Program
     {
-        /// <summary>
-        /// Главная точка входа для приложения.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            var mainView = new DMSView();
+            var presenter = new DMSPresenter(mainView);
+            
+            Application.Run(mainView);
         }
     }
 }

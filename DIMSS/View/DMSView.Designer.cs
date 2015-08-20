@@ -1,6 +1,6 @@
 ﻿namespace DIMSS.View
 {
-    partial class MainForm
+    partial class DMSView
     {
         /// <summary>
         /// Требуется переменная конструктора.

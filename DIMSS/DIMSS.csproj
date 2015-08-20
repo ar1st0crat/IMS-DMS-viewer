@@ -74,26 +74,29 @@
   <ItemGroup>
     <Compile Include="Model\ChromatogramModel.cs" />
     <Compile Include="Model\DMSModel.cs" />
-    <Compile Include="View\ChromatogramForm.cs">
+    <Compile Include="Presenter\ChromatogramPresenter.cs" />
+    <Compile Include="Presenter\DMSPresenter.cs" />
+    <Compile Include="View\ChromatogramView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\ChromatogramForm.Designer.cs">
-      <DependentUpon>ChromatogramForm.cs</DependentUpon>
+    <Compile Include="View\ChromatogramView.Designer.cs">
+      <DependentUpon>ChromatogramView.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\MainForm.cs">
+    <Compile Include="View\DMSView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="View\DMSView.Designer.cs">
+      <DependentUpon>DMSView.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\MZSpectrum.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="View\ChromatogramForm.resx">
-      <DependentUpon>ChromatogramForm.cs</DependentUpon>
+    <Compile Include="View\IDMSView.cs" />
+    <EmbeddedResource Include="View\ChromatogramView.resx">
+      <DependentUpon>ChromatogramView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="View\DMSView.resx">
+      <DependentUpon>DMSView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -138,6 +141,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

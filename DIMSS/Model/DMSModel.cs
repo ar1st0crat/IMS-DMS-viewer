@@ -7,8 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace DIMSS.Model
 {
-    /*
-     * The CSV file structure should be as follows:
+    /* DMS spectra are read from CSV files.
+     * The corresponding CSV file structure should be as follows:
      *          
      *          1) MetaInfo; spec1; spec2; spec3; spec4; ...;
      *          

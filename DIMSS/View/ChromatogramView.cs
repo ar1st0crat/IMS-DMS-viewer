@@ -9,11 +9,11 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace DIMSS.View
 {
-    public partial class ChromatogramForm : Form
+    public partial class ChromatogramView : Form
     {
         ChromatogramModel model = new ChromatogramModel();
 
-        public ChromatogramForm()
+        public ChromatogramView()
         {
             InitializeComponent();
         }
