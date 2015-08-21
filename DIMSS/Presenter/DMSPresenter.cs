@@ -153,7 +153,8 @@ namespace DIMSS.Presenter
             }
 
             ChromatogramView chromView = new ChromatogramView();
-            if (chromView.SetMzxmlFile(ofd.FileName))
+            ChromatogramPresenter chromPresenter = new ChromatogramPresenter(chromView);
+            if ( chromPresenter.LoadMzXmlFile(ofd.FileName) )
             {
                 chromView.ShowDialog();
             }

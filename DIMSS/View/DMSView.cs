@@ -10,13 +10,15 @@ namespace DIMSS.View
     /// </summary>
     public partial class DMSView : Form, IDMSView
     {
-        public System.Windows.Forms.ListView CompoundsListView
+        #region IDMSView interface implementation
+
+        public ListView CompoundsListView
         {
             get { return compoundsListView;  }
             set { compoundsListView = value; }
         }
 
-        public System.Windows.Forms.DataVisualization.Charting.Chart ChartDIMS
+        public Chart ChartDIMS
         {
             get { return chartDIMS; }
             set { chartDIMS = value; }
@@ -40,7 +42,8 @@ namespace DIMSS.View
         public event EventHandler<ItemCheckedEventArgs> CompoundChecked;
         public event EventHandler<EventArgs> AllCleared;
         public event EventHandler<EventArgs> MzXmlOpened;
-        
+
+        #endregion
 
         public DMSView()
         {
@@ -71,7 +74,8 @@ namespace DIMSS.View
                 AllCleared(sender, e);
         }
 
-        #region data chart and radio buttons to switch between the view modes (not in presenter)
+        #region data chart and radio buttons to switch between the view modes
+        // this code is not in Presenter, since it's pure view stuff
 
         private void ChangeChartStyle(SeriesChartType style)
         {
@@ -79,7 +83,6 @@ namespace DIMSS.View
             {
                 ser.ChartType = style;
             }
-
             CurrentChartType = style;
         }
 

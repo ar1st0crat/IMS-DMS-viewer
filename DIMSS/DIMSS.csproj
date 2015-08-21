@@ -91,6 +91,7 @@
     <Compile Include="Model\MZSpectrum.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\IChromatogramView.cs" />
     <Compile Include="View\IDMSView.cs" />
     <EmbeddedResource Include="View\ChromatogramView.resx">
       <DependentUpon>ChromatogramView.cs</DependentUpon>

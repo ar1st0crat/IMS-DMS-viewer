@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace DIMSS.Model
+﻿namespace DIMSS.Model
 {
     public class MZSpectrum
     {
@@ -12,7 +7,7 @@ namespace DIMSS.Model
 
         public int PeakCount()
         {
-            return MZList.Count();
+            return MZList.Length;
         }
     }
 }
