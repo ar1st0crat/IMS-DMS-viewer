@@ -11,7 +11,7 @@ namespace DIMSSTests
         DMSModel model = new DMSModel();
 
         [TestMethod]
-        public void WhenSpectrumNotFized_FixSpectrum_ShouldReturnFixedSpectrum()
+        public void FixSpectrum_WhenSpectrumNotFixed_ShouldReturnFixedSpectrum()
         {
             // Arrange
             List<int> spectrum = new List<int>() { 1,0,4,-5,-32768, 32767, -32768, -32768, -32767, -15, -32767 };
@@ -23,7 +23,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void WhenSpectrumNotFull_FixSpectrum_ShouldReturnSameSpectrum()
+        public void FixSpectrum_WhenSpectrumNotFull_ShouldReturnSameSpectrum()
         {
             // Arrange
             List<int> spectrum = new List<int>() { -32768 };
@@ -36,7 +36,7 @@ namespace DIMSSTests
 
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
-        public void WhenSpectrumIsNull_FixSpectrum_ShouldThrowException()
+        public void FixSpectrum_WhenSpectrumIsNull_ShouldThrowException()
         {
             // Arrange
             List<int> nullspectrum = null;
@@ -45,7 +45,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void WhenParamsNormal_ParseMeasureParams_ShouldReturnNormalParams()
+        public void ParseMeasureParams_WhenParamsNormal_ShouldReturnNormalParams()
         {
             // Arrange
             float fromV = 0.0f, toV = 0.0f;
@@ -58,7 +58,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void WhenParamsInPointFormat_ParseMeasureParams_ShouldParseParamsNormally()
+        public void ParseMeasureParams_WhenParamsInPointFormat_ShouldParseParamsNormally()
         {
             // Arrange
             float fromV = 0.0f, toV = 0.0f;
@@ -71,7 +71,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void WhenParamIsAbsent_ParseMeasureParams_ShouldLeaveParamUnchanged()
+        public void ParseMeasureParams_WhenParamIsAbsent_ShouldLeaveParamUnchanged()
         {
             // Arrange
             float fromV = 2.0f, toV = 0.0f;
