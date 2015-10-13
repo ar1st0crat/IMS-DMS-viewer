@@ -68,27 +68,68 @@ namespace DIMSS.Presenter
         /// <returns>Color of the pixel on a plot</returns>
         private Color GetRGBColor(double value)
         {
-            int intvalue = (int)(value * 0xFFFFFF);
+            // COLORMAP #1
+            // int intvalue = (int)(value * 0xFFFFFF);
+            // return Color.FromArgb((intvalue & 0xFF0000) >> 16, (intvalue & 0xFF00) >> 8, 0xFF);
 
-            return Color.FromArgb((intvalue & 0xFF0000) >> 16, (intvalue & 0xFF00) >> 8, intvalue & 0xFF);
+            // COLORMAP #2
+            byte r = 0, g = 0, b = 0;
+            if (value < 1 / 6f)
+            {
+                r = 255;
+                g = (byte)(r * (value - 0) / (2 / 6f - value));
+            }
+            else if (value < 2 / 6f)
+            {
+                g = 255;
+                r = (byte)(g * (2 / 6f - value) / (value - 0));
+            }
+            else if (value < 3 / 6f)
+            {
+                g = 255;
+                b = (byte)(g * (2 / 6f - value) / (value - 4 / 6f));
+            }
+            else if (value < 4 / 6f)
+            {
+                b = 255;
+                g = (byte)(b * (value - 4 / 6f) / (2 / 6f - value));
+            }
+            else if (value < 5 / 6f)
+            {
+                b = 255;
+                r = (byte)(b * (4 / 6f - value) / (value - 1f));
+            }
+            else
+            {
+                r = 255;
+                b = (byte)(r * (value - 1f) / (4 / 6f - value));
+            }
+
+            return Color.FromArgb(r, g, b);
         }
-        
+
+
         private void ShowChromatogram2D()
         {
             int scanCount = model.ScanCount();
 
+            int width = 700, height = 600;
+
             // create empty bitmap and fill it with black color
-            Bitmap chromatogram2D = new Bitmap(700, scanCount - 1);
+            Bitmap chromatogram2D = new Bitmap(width, height);//scanCount - 1);
+
             for (int i = 0; i < chromatogram2D.Width; i++)
             {
                 for (int j = 0; j < chromatogram2D.Height; j++)
                 {
-                    chromatogram2D.SetPixel(i, j, Color.Black);
+                    chromatogram2D.SetPixel(i, j, Color.FromArgb(0,0,255) );
                 }
             }
 
             // get all spectra and blit them onto the bitmap
-            for (int scanNo = 1; scanNo < scanCount; scanNo++)
+            int step = scanCount / height;
+
+            for (int scanNo = 1, vPos = 0; vPos < height; scanNo += step, vPos++)
             {
                 MZSpectrum spectrum = model.GetMZSpectrumByIndex(scanNo);
 
@@ -97,18 +138,19 @@ namespace DIMSS.Presenter
                     double x = spectrum.MZList[i];
                     double y = spectrum.IntensityList[i];
 
-                    int redLevel = (int)(y * 1.5);
-                    if (redLevel > 255)
-                    {
-                        redLevel = 255;
-                    }
-
-                    chromatogram2D.SetPixel((int)x, scanNo - 1, GetRGBColor(y / 7500));//Color.FromArgb( redLevel, 0, 0));
+                    chromatogram2D.SetPixel((int)x, vPos, GetRGBColor(y/1000));
                 }
             }
 
+            // show current spectrum line on chromatogram
+            MZSpectrum curSpectrum = model.GetMZSpectrumByIndex( model.CurrentMZSpectrum );
+
+            for (int i = 0; i < width; i++)
+            {
+                chromatogram2D.SetPixel(i, model.CurrentMZSpectrum / step, Color.White);
+            }
+
             // fit the entire chromatogram to the pictureBox area
-            view.ChromatogramImage.SizeMode = PictureBoxSizeMode.StretchImage;
             view.ChromatogramImage.Image = chromatogram2D;
         }
 
@@ -140,6 +182,8 @@ namespace DIMSS.Presenter
             view.ChromatogramChart.Series.Add(mzSpectrum);
 
             view.ScansView.SelectedIndex = model.CurrentMZSpectrum - 1;
+
+            ShowChromatogram2D();
         }
         
         private void OnClose(object sender, EventArgs e)
