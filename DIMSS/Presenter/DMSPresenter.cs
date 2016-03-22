@@ -83,11 +83,13 @@ namespace DIMSS.Presenter
 
                 // copy spectrum to the newly created serie of a .NET Chart Control
 
-                // ...and annoying check for format of initial csv file (if it was given without x coordinates then we extract info from measurement parameters)
+                // ...and annoying check for format of initial csv file 
+                // (if it was given without x coordinates then we extract info from measurement parameters)
                 if (model.SpectralPoints[nSerie][0] == int.MaxValue)
                 {
                     // we have only y coordinates
-                    // however we can approximately evaluate x coordinates based on the info we have in measureParams, namely: (from,V) and (To,V)
+                    // however we can approximately evaluate x coordinates based on the info we have in measureParams, 
+                    // namely: (from,V) and (To,V)
                     float fromV = 0.0f;
                     float toV = 0.0f;
 
@@ -154,7 +156,7 @@ namespace DIMSS.Presenter
 
             ChromatogramView chromView = new ChromatogramView();
             ChromatogramPresenter chromPresenter = new ChromatogramPresenter(chromView);
-            if ( chromPresenter.LoadMzXmlFile(ofd.FileName) )
+            if (chromPresenter.LoadMzXmlFile(ofd.FileName))
             {
                 chromView.ShowDialog();
             }

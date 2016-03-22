@@ -105,7 +105,7 @@ namespace DIMSS.View
 
         private void Details_Click(object sender, EventArgs e)
         {
-            MessageBox.Show( "In progress..." );
+            MessageBox.Show("In progress...");
         }
         
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

@@ -11,19 +11,19 @@ namespace DIMSSTests
         DMSModel model = new DMSModel();
 
         [TestMethod]
-        public void FixSpectrum_WhenSpectrumNotFixed_ShouldReturnFixedSpectrum()
+        public void WhenSpectrumNotFixed_FixSpectrum_ShouldReturnFixedSpectrum()
         {
             // Arrange
-            List<int> spectrum = new List<int>() { 1,0,4,-5,-32768, 32767, -32768, -32768, -32767, -15, -32767 };
+            List<int> spectrum = new List<int>() { 1, 0, 4, -5, -32768, 32767, -32768, -32768, -32767, -15, -32767 };
             List<int> expected = new List<int>() { 1, 0, 4, -5, -32768, 32767, 32767, 32767, -32767, -15, -32767 };
             // Act
-            model.FixSpectrum( spectrum );
+            model.FixSpectrum(spectrum);
             // Assert
             CollectionAssert.AreEqual(expected, spectrum);
         }
 
         [TestMethod]
-        public void FixSpectrum_WhenSpectrumNotFull_ShouldReturnSameSpectrum()
+        public void WhenSpectrumNotFull_FixSpectrum_ShouldReturnSameSpectrum()
         {
             // Arrange
             List<int> spectrum = new List<int>() { -32768 };
@@ -36,7 +36,7 @@ namespace DIMSSTests
 
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
-        public void FixSpectrum_WhenSpectrumIsNull_ShouldThrowException()
+        public void WhenSpectrumIsNull_FixSpectrum_ShouldThrowException()
         {
             // Arrange
             List<int> nullspectrum = null;
@@ -45,7 +45,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void ParseMeasureParams_WhenParamsNormal_ShouldReturnNormalParams()
+        public void WhenParamsAreNormal_ParseMeasureParams_ShouldReturnNormalParams()
         {
             // Arrange
             float fromV = 0.0f, toV = 0.0f;
@@ -58,7 +58,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void ParseMeasureParams_WhenParamsInPointFormat_ShouldParseParamsNormally()
+        public void WhenParamsInPointFormat_ParseMeasureParams_ShouldParseParamsNormally()
         {
             // Arrange
             float fromV = 0.0f, toV = 0.0f;
@@ -71,7 +71,7 @@ namespace DIMSSTests
         }
 
         [TestMethod]
-        public void ParseMeasureParams_WhenParamIsAbsent_ShouldLeaveParamUnchanged()
+        public void WhenParamIsAbsent_ParseMeasureParams_ShouldLeaveParamUnchanged()
         {
             // Arrange
             float fromV = 2.0f, toV = 0.0f;

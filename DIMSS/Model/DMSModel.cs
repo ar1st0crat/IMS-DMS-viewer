@@ -4,7 +4,6 @@ using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 
-
 namespace DIMSS.Model
 {
     /* DMS spectra are read from CSV files.
@@ -49,7 +48,6 @@ namespace DIMSS.Model
             get { return spectralPoints; }
         }
        
-
         /// <summary>
         // Fix the dims spectrum: invert the sign of corrupted samples 
         /// </summary>
@@ -64,14 +62,13 @@ namespace DIMSS.Model
                 }
             }
         }
-
-
+        
         /// <summary>
         /// Iterate across the files in a given directory
         /// </summary>
         /// <param name="dir">Directory name</param>
         /// <returns>Two collections of strings: file names and file infos</returns>
-        private List<string>[] FileWalk( string dir )
+        private List<string>[] FileWalk(string dir)
         {
             // allocate memory for the array of two stringlists
             var fileDescriptions = new List<string>[2];
@@ -79,8 +76,7 @@ namespace DIMSS.Model
             // ... and for each stringlist
             fileDescriptions[0] = new List<string>();
             fileDescriptions[1] = new List<string>();
-
-
+            
             // FILTER CSV: 
             // select only csv files in the directory chosen by user
             var files = Directory.EnumerateFiles(dir).Where(t => t.EndsWith("csv"));
@@ -93,7 +89,7 @@ namespace DIMSS.Model
                 string fileDescription = String.Format("{0} [ {1} ]", Path.GetFileNameWithoutExtension(file), dir.Remove(0, dir.LastIndexOf('\\') + 1));
                 
                 // add result to the first stringlist we'll return from the method
-                fileDescriptions[0].Add( fileDescription );
+                fileDescriptions[0].Add(fileDescription);
 
                 // simple parsing of the csv file
                 var csv_samples = File.ReadAllText(file).Split(';');
@@ -140,18 +136,17 @@ namespace DIMSS.Model
 
             return fileDescriptions;
         }
-
-
+        
         /// <summary>
         /// Iterate across the files in a given directory and its sub-directories
         /// and load all DMS contents found in csv files
         /// </summary>
         /// <param name="path">The directory name</param>
         /// <returns>Two collections of strings: file names and file infos</returns>
-        public List<string>[] LoadFolderContent( string path )
+        public List<string>[] LoadFolderContent(string path)
         {
             // get all child directories of the directory specified by user
-            var dirs = Directory.EnumerateDirectories( path );
+            var dirs = Directory.EnumerateDirectories(path);
 
             // firstly, iterate through files in chosen directory
             var fileDescriptions = FileWalk(path);
@@ -160,25 +155,24 @@ namespace DIMSS.Model
             foreach (string dir in dirs)
             {
                 var subfolderFileDescriptions = FileWalk(dir);
-                fileDescriptions[0].AddRange( subfolderFileDescriptions[0] );
-                fileDescriptions[1].AddRange( subfolderFileDescriptions[1] );
+                fileDescriptions[0].AddRange(subfolderFileDescriptions[0]);
+                fileDescriptions[1].AddRange(subfolderFileDescriptions[1]);
             }
 
             return fileDescriptions;
         }
-
-
+        
         /// <summary>
         /// Parse the parameters of measurements
         /// </summary>
         /// <param name="nSpectrum">The ordinal number of the DMS spectrum to work with</param>
         /// <param name="fromV">The 1st parsed value</param>
         /// <param name="toV">The 2nd parsed value</param>
-        public void ParseMeasureParams( int nSpectrum, ref float fromV, ref float toV )
+        public void ParseMeasureParams(int nSpectrum, ref float fromV, ref float toV)
         {
             // parse measureParams using RegExp
-            var col = Regex.Matches( measureParams[nSpectrum], @"(?<key>\s*\w+[,\.]*\w+\s*)=(?<val>\s*\d*[,\.]?\d+\s*)" );
-
+            var col = Regex.Matches(measureParams[nSpectrum], 
+                                        @"(?<key>\s*\w+[,\.]*\w+\s*)=(?<val>\s*\d*[,\.]?\d+\s*)");
             foreach (Match m in col)
             {
                 if (m.Groups["key"].Value.Contains("From,V"))

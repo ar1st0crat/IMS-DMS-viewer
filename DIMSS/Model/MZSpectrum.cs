@@ -5,9 +5,9 @@
         public double[] MZList { set; get; }
         public double[] IntensityList { set; get; }
 
-        public int PeakCount()
+        public int PeakCount 
         {
-            return MZList.Length;
+            get { return MZList.Length; }
         }
     }
 }
