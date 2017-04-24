@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -16,7 +15,7 @@ namespace DIMSS.Model
      *          2) MetaInfo;; spec1; x1; spec2; x2; spec3; x3; ...;
      *          
      * 
-     *  This version of DIMSS deals with constant spectrum dimension which we define in SPECSIZE
+     *  This version of DIMSS deals with constant spectrum dimension which we define in SpecSize
      */
 
     /// <summary>
@@ -24,39 +23,43 @@ namespace DIMSS.Model
     /// </summary>
     public class DMSModel
     {
-        // by default the size of a spectrum is 2^11 = 2048 samples
-        public const int SPECSIZE = 2048;
-
-        // here we store measurement parameters
-        private List<string> measureParams = new List<string>();
-        public List<string> MeasureParams
-        {
-            get { return measureParams; }
-        }
-
-        // here we store all our spectra (vector of vectors)
-        private List<List<int>> spectra = new List<List<int>>();
-        public List<List<int>> Spectra
-        {
-            get { return spectra; }
-        }
-
-        // here we store x-coordinates of spectral points (in some cases they're not given)
-        private List<List<float>> spectralPoints = new List<List<float>>();
-        public List<List<float>> SpectralPoints
-        {
-            get { return spectralPoints; }
-        }
-       
         /// <summary>
-        // Fix the dims spectrum: invert the sign of corrupted samples 
+        /// By default the size of a spectrum is 2^11 = 2048 samples
+        /// </summary>
+        public const int SpecSize = 2048;
+
+        /// <summary>
+        /// Specific measurement parameters
+        /// </summary>
+        public List<string> MeasureParams { get; private set; }
+
+        /// <summary>
+        /// All spectra (vector of vectors)
+        /// </summary>
+        public List<List<int>> Spectra { get; private set; }
+
+        /// <summary>
+        /// X-coordinates of spectral points (in some cases they're not given)
+        /// </summary>
+        public List<List<float>> SpectralPoints { get; private set; }
+        
+
+        public DMSModel()
+        {
+            MeasureParams = new List<string>();
+            Spectra = new List<List<int>>();
+            SpectralPoints = new List<List<float>>();
+        }
+
+        /// <summary>
+        /// Fix the dims spectrum: invert the sign of corrupted samples 
         /// </summary>
         /// <param name="spectrum">DIMS spectrum list</param>
         public void FixSpectrum(List<int> spectrum)
         {
             for (int i = 1; i < spectrum.Count; i++)
             {
-                if ((spectrum[i] == -32768) && (spectrum[i - 1] > 0))
+                if (spectrum[i] == -32768 && spectrum[i - 1] > 0)
                 {
                     spectrum[i] = 32767;
                 }
@@ -86,42 +89,43 @@ namespace DIMSS.Model
             foreach (string file in files)
             {
                 // preprocess the full filename
-                string fileDescription = String.Format("{0} [ {1} ]", Path.GetFileNameWithoutExtension(file), dir.Remove(0, dir.LastIndexOf('\\') + 1));
+                string fileDescription = string.Format("{0} [ {1} ]", 
+                    Path.GetFileNameWithoutExtension(file), dir.Remove(0, dir.LastIndexOf('\\') + 1));
                 
                 // add result to the first stringlist we'll return from the method
                 fileDescriptions[0].Add(fileDescription);
 
                 // simple parsing of the csv file
-                var csv_samples = File.ReadAllText(file).Split(';');
+                var csvSamples = File.ReadAllText(file).Split(';');
 
                 // add info about the measurements parameters (it is stored in the first row of the csv file)
-                measureParams.Add(csv_samples.ElementAt(0));
+                MeasureParams.Add(csvSamples.ElementAt(0));
 
                 // add this info to the second stringlist
-                fileDescriptions[1].Add( csv_samples.ElementAt(0) );
+                fileDescriptions[1].Add(csvSamples.ElementAt(0));
 
                 // create new lists for new spectrum
                 List<int> spec = new List<int>();
-                List<float> spec_points = new List<float>();
+                List<float> specPoints = new List<float>();
 
                 // if there is only one column of data in csv file (i.e. the second element isn't empty)
-                if (csv_samples.ElementAt(1) != "")
+                if (csvSamples.ElementAt(1) != "")
                 {
                     // fill current spectrum except x-axis values
-                    for (int j = 0; j < SPECSIZE; j++)
+                    for (int j = 0; j < SpecSize; j++)
                     {
-                        spec.Add(Int32.Parse(csv_samples.ElementAt(j + 1)));
-                        spec_points.Add(int.MaxValue);
+                        spec.Add(int.Parse(csvSamples.ElementAt(j + 1)));
+                        specPoints.Add(int.MaxValue);
                     }
                 }
                 // otherwise include the x-axis values into spectral information
                 else
                 {
                     // fill current spectrum
-                    for (int j = 0; j < SPECSIZE; j++)
+                    for (int j = 0; j < SpecSize; j++)
                     {
-                        spec.Add(Int32.Parse(csv_samples.ElementAt(j * 2 + 2)));
-                        spec_points.Add(float.Parse(csv_samples.ElementAt(j * 2 + 3),
+                        spec.Add(int.Parse(csvSamples.ElementAt(j * 2 + 2)));
+                        specPoints.Add(float.Parse(csvSamples.ElementAt(j * 2 + 3),
                                                             System.Globalization.CultureInfo.InvariantCulture));
                     }
                 }
@@ -130,8 +134,8 @@ namespace DIMSS.Model
                 FixSpectrum(spec);
 
                 // add spectrum to the list of spectra
-                spectra.Add(spec);
-                spectralPoints.Add(spec_points);
+                Spectra.Add(spec);
+                SpectralPoints.Add(specPoints);
             }
 
             return fileDescriptions;
@@ -165,13 +169,13 @@ namespace DIMSS.Model
         /// <summary>
         /// Parse the parameters of measurements
         /// </summary>
-        /// <param name="nSpectrum">The ordinal number of the DMS spectrum to work with</param>
+        /// <param name="spectrumNo">The ordinal number of the DMS spectrum to work with</param>
         /// <param name="fromV">The 1st parsed value</param>
         /// <param name="toV">The 2nd parsed value</param>
-        public void ParseMeasureParams(int nSpectrum, ref float fromV, ref float toV)
+        public void ParseMeasureParams(int spectrumNo, ref float fromV, ref float toV)
         {
             // parse measureParams using RegExp
-            var col = Regex.Matches(measureParams[nSpectrum], 
+            var col = Regex.Matches(MeasureParams[spectrumNo], 
                                         @"(?<key>\s*\w+[,\.]*\w+\s*)=(?<val>\s*\d*[,\.]?\d+\s*)");
             foreach (Match m in col)
             {

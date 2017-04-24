@@ -9,25 +9,27 @@ namespace DIMSS.Presenter
 {
     class DMSPresenter
     {
-        private readonly DMSModel model = new DMSModel();
-        private readonly IDMSView view;
+        private readonly DMSModel _model = new DMSModel();
+        private readonly IDMSView _view;
 
-        // The indices of spectra specified by user in checked listview
-        private List<int> checkedList = new List<int>();
+        /// <summary>
+        /// The indices of spectra specified by user in checked listview
+        /// </summary>
+        private List<int> _checkedList = new List<int>();
 
         /// <summary>
         /// Setting up presenter:
         /// subscribing to view events and synchronizing with its properties
         /// </summary>
-        /// <param name="vw">Particular view implementing IDMSView interface</param>
-        public DMSPresenter(IDMSView vw)
+        /// <param name="view">Particular view implementing IDMSView interface</param>
+        public DMSPresenter(IDMSView view)
         {
-            view = vw;
-            view.FilesLoaded += OnLoadFiles;
-            view.CompoundChecked += OnCheckCompound;
-            view.AllCleared += OnClearAll;
-            view.MzXmlOpened += OnOpenMzXml;
-            view.CurrentChartType = SeriesChartType.Column;
+            _view = view;
+            _view.FilesLoaded += OnLoadFiles;
+            _view.CompoundChecked += OnCheckCompound;
+            _view.AllCleared += OnClearAll;
+            _view.MzXmlOpened += OnOpenMzXml;
+            _view.CurrentChartType = SeriesChartType.Column;
         }
 
         /// <summary>
@@ -42,18 +44,17 @@ namespace DIMSS.Presenter
             }
 
             // iterate through the selected folder and its subfolders and load all DMS contents found in csv files 
-            var files = model.LoadFolderContent(fbd.SelectedPath);
+            var files = _model.LoadFolderContent(fbd.SelectedPath);
 
             for (int i = 0; i < files[0].Count; i++)
             {
                 // add the short file name to the first column of the listview
-                ListViewItem item = view.CompoundsListView.Items.Add(files[0][i]);
-
+                ListViewItem item = _view.CompoundsListView.Items.Add(files[0][i]);
                 // add the file info to the second column of the listview
                 item.SubItems.Add(files[1][i]);
             }
 
-            view.TotalFilesCountText = String.Format("Total: {0} files", model.Spectra.Count);
+            _view.TotalFilesCountText = string.Format("Total: {0} files", _model.Spectra.Count);
         }
 
         /// <summary>
@@ -61,16 +62,16 @@ namespace DIMSS.Presenter
         /// </summary>
         private void OnCheckCompound(object sender, ItemCheckedEventArgs e)
         {
-            int nSerie = e.Item.Index;
+            int serieNo = e.Item.Index;
 
             if (e.Item.Checked)
             {
                 Series s = new Series(e.Item.Text);
-                s.ChartType = view.CurrentChartType;
+                s.ChartType = _view.CurrentChartType;
 
                 try
                 {
-                    view.ChartDIMS.Series.Add(s);
+                    _view.ChartDIMS.Series.Add(s);
                 }
                 catch (ArgumentException argEx)
                 {
@@ -79,13 +80,13 @@ namespace DIMSS.Presenter
                     return;
                 }
 
-                checkedList.Add(nSerie);
+                _checkedList.Add(serieNo);
 
                 // copy spectrum to the newly created serie of a .NET Chart Control
 
                 // ...and annoying check for format of initial csv file 
                 // (if it was given without x coordinates then we extract info from measurement parameters)
-                if (model.SpectralPoints[nSerie][0] == int.MaxValue)
+                if (_model.SpectralPoints[serieNo][0] == int.MaxValue)
                 {
                     // we have only y coordinates
                     // however we can approximately evaluate x coordinates based on the info we have in measureParams, 
@@ -93,40 +94,40 @@ namespace DIMSS.Presenter
                     float fromV = 0.0f;
                     float toV = 0.0f;
 
-                    model.ParseMeasureParams(nSerie, ref fromV, ref toV);
+                    _model.ParseMeasureParams(serieNo, ref fromV, ref toV);
 
                     // ... and map x coordinates into range [ fromV, toV ]
-                    for (int j = 0; j < DMSModel.SPECSIZE; j++)
+                    for (int j = 0; j < DMSModel.SpecSize; j++)
                     {
-                        view.ChartDIMS.Series[checkedList.Count - 1].Points.AddXY(
-                            fromV + j * (toV - fromV) / DMSModel.SPECSIZE, model.Spectra[nSerie][j]);
+                        _view.ChartDIMS.Series[_checkedList.Count - 1].Points.AddXY(
+                            fromV + j * (toV - fromV) / DMSModel.SpecSize, _model.Spectra[serieNo][j]);
                     }
                 }
 
                 // if we have both x and y coordinates then everything is pretty simple
                 else
                 {
-                    for (int j = 0; j < DMSModel.SPECSIZE; j++)
+                    for (int j = 0; j < DMSModel.SpecSize; j++)
                     {
-                        view.ChartDIMS.Series[checkedList.Count - 1].Points.AddXY(
-                            model.SpectralPoints[nSerie][j], model.Spectra[nSerie][j]);
+                        _view.ChartDIMS.Series[_checkedList.Count - 1].Points.AddXY(
+                            _model.SpectralPoints[serieNo][j], _model.Spectra[serieNo][j]);
                     }
                 }
             }
             else
             {
-                int checkedPos = checkedList.IndexOf(nSerie);
+                int checkedPos = _checkedList.IndexOf(serieNo);
 
                 if (checkedPos == -1)
                 {
                     return;
                 }
 
-                view.ChartDIMS.Series.RemoveAt(checkedPos);
-                checkedList.RemoveAt(checkedPos);
+                _view.ChartDIMS.Series.RemoveAt(checkedPos);
+                _checkedList.RemoveAt(checkedPos);
             }
 
-            view.ChartDIMS.Update();
+            _view.ChartDIMS.Update();
         }
 
         /// <summary>
@@ -134,13 +135,13 @@ namespace DIMSS.Presenter
         /// </summary>
         private void OnClearAll(object sender, EventArgs e)
         {
-            foreach (ListViewItem checkedItem in view.CompoundsListView.CheckedItems)
+            foreach (ListViewItem checkedItem in _view.CompoundsListView.CheckedItems)
             {
                 checkedItem.Checked = false;
             }
 
-            view.ChartDIMS.Series.Clear();
-            checkedList.Clear();
+            _view.ChartDIMS.Series.Clear();
+            _checkedList.Clear();
         }
 
         /// <summary>
@@ -149,16 +150,16 @@ namespace DIMSS.Presenter
         private void OnOpenMzXml(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            if (ofd.ShowDialog() != DialogResult.OK)
             {
                 return;
             }
 
-            ChromatogramView chromView = new ChromatogramView();
-            ChromatogramPresenter chromPresenter = new ChromatogramPresenter(chromView);
-            if (chromPresenter.LoadMzXmlFile(ofd.FileName))
+            var chromatogramView = new ChromatogramView();
+            var chromatogramPresenter = new ChromatogramPresenter(chromatogramView);
+            if (chromatogramPresenter.LoadMzXmlFile(ofd.FileName))
             {
-                chromView.ShowDialog();
+                chromatogramView.ShowDialog();
             }
         }
     }

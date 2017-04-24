@@ -4,22 +4,27 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using SciColorMaps;
 
 namespace DIMSS.Presenter
 {
     class ChromatogramPresenter
     {
-        private readonly ChromatogramModel model = new ChromatogramModel();
-        private readonly IChromatogramView view;
+        private readonly ChromatogramModel _model = new ChromatogramModel();
+        private readonly IChromatogramView _view;
 
-        public ChromatogramPresenter(IChromatogramView vw)
+        /// <summary>
+        /// Main colormap used for chromatogram display
+        /// </summary>
+        private readonly ColorMap colorMap = new ColorMap("afmhot");
+
+        public ChromatogramPresenter(IChromatogramView view)
         {
-            view = vw;
-            view.ViewLoaded += OnLoad;
-            view.ViewClosed += OnClose;
-            view.PreviousScan += OnPreviousScan;
-            view.NextScan += OnNextScan;
-            view.NavigateScan += OnNavigateScan;
+            _view = view;
+            _view.ViewLoaded += OnLoad;
+            _view.PreviousScan += OnPreviousScan;
+            _view.NextScan += OnNextScan;
+            _view.NavigateScan += OnNavigateScan;
         }
 
         private void OnLoad(object sender, EventArgs e)
@@ -35,82 +40,34 @@ namespace DIMSS.Presenter
         /// <returns>true if mzXml was loaded and parsed succesfully; false - otherwise</returns>
         public bool LoadMzXmlFile(string mzxmlFilename)
         {
-            string parseResult = model.OpenParser(mzxmlFilename);
+            string parseResult = _model.Load(mzxmlFilename);
 
-            if (parseResult != ChromatogramModel.LOAD_RESULT_OK)
+            if (parseResult != MZXMLParser.LoadSuccessMessage)
             {
                 MessageBox.Show(parseResult);
                 return false;
             }
 
-            if (model.ScanCount <= 0)
+            if (_model.ScanCount <= 0)
             {
                 MessageBox.Show("No spectral information in given file!");
                 return false;
             }
 
             // retrieve the number of scans and fill a combobox with corresponding range of values for navigation
-            for (int i = 1; i < model.ScanCount; i++)
+            for (int i = 1; i < _model.ScanCount; i++)
             {
-                view.ScansView.Items.Add(i.ToString());
+                _view.ScansView.Items.Add(i.ToString());
             }
 
-            view.ScansView.SelectedIndex = 0;
+            _view.ScansView.SelectedIndex = 0;
             
             return true;
-        }
-
-        /// <summary>
-        /// Optional procedure - map the value onto RGB-scale for plotting;
-        /// value is given between 0 and 1 (percent) 
-        /// </summary>
-        /// <param name="value">Pixel intensity percent (value between 0 and 1)</param>
-        /// <returns>Color of the pixel on a plot</returns>
-        private Color GetRGBColor(double value)
-        {
-            // COLORMAP #1
-            // int intvalue = (int)(value * 0xFFFFFF);
-            // return Color.FromArgb((intvalue & 0xFF0000) >> 16, (intvalue & 0xFF00) >> 8, 0xFF);
-
-            // COLORMAP #2
-            byte r = 0, g = 0, b = 0;
-            if (value < 1 / 6f)
-            {
-                r = 255;
-                g = (byte)(r * (value - 0) / (1 / 3f - value));
-            }
-            else if (value < 1 / 3f)
-            {
-                g = 255;
-                r = (byte)(g * (1 / 3f - value) / value);
-            }
-            else if (value < 1 / 2f)
-            {
-                g = 255;
-                b = (byte)(g * (1 / 3f - value) / (value - 2 / 3f));
-            }
-            else if (value < 2 / 3f)
-            {
-                b = 255;
-                g = (byte)(b * (value - 2 / 3f) / (1 / 3f - value));
-            }
-            else if (value < 5 / 6f)
-            {
-                b = 255;
-                r = (byte)(b * (2 / 3f - value) / (value - 1));
-            }
-            else
-            {
-                r = 255;
-                b = (byte)(r * (value - 1) / (2 / 3f - value));
-            }
-
-            return Color.FromArgb(r, g, b);
         }
         
         private void ShowChromatogram2D()
         {
-            int scanCount = model.ScanCount;
+            int scanCount = _model.ScanCount;
 
             int width = 700, height = 600;
 
@@ -121,7 +78,7 @@ namespace DIMSS.Presenter
             {
                 for (int j = 0; j < chromatogram2D.Height; j++)
                 {
-                    chromatogram2D.SetPixel(i, j, Color.FromArgb(0, 0, 255));
+                    chromatogram2D.SetPixel(i, j, colorMap.GetColorByNumber(0));
                 }
             }
 
@@ -130,9 +87,10 @@ namespace DIMSS.Presenter
 
             for (int scanNo = 1, vPos = 0; vPos < height; scanNo += step, vPos++)
             {
-                MZSpectrum spectrum = model.GetMZSpectrumByIndex(scanNo);
+                MZSpectrum spectrum = _model.GetMZSpectrumByIndex(scanNo);
                 if (spectrum == null)
                 {
+                    // unlikely, but who knows...
                     return;
                 }
 
@@ -141,37 +99,37 @@ namespace DIMSS.Presenter
                     double x = spectrum.MZList[i];
                     double y = spectrum.IntensityList[i];
 
-                    chromatogram2D.SetPixel((int)x, vPos, GetRGBColor(y / 1000));
+                    chromatogram2D.SetPixel((int)x, vPos, colorMap.GetColor((float)y / 500));
                 }
             }
 
             // show current spectrum line on chromatogram
-            MZSpectrum curSpectrum = model.GetMZSpectrumByIndex(model.CurrentMZSpectrum);
+            MZSpectrum curSpectrum = _model.GetMZSpectrumByIndex(_model.CurrentMZSpectrum);
 
             for (int i = 0; i < width; i++)
             {
-                chromatogram2D.SetPixel(i, model.CurrentMZSpectrum / step, Color.White);
+                chromatogram2D.SetPixel(i, _model.CurrentMZSpectrum / step, Color.White);
             }
 
             // fit the entire chromatogram to the pictureBox area
-            view.ChromatogramImage.Image = chromatogram2D;
+            _view.ChromatogramImage.Image = chromatogram2D;
         }
 
         private void UpdateChart()
         {
-            MZSpectrum spectrum = model.GetCurrentMZSpectrum();
+            MZSpectrum spectrum = _model.GetCurrentMZSpectrum();
             if (spectrum == null)
             {
-                MessageBox.Show(ChromatogramModel.READ_MZXML_ERROR);
+                MessageBox.Show(MZXMLParser.ReadErrorMessage);
                 return;
             }
 
             // fill datagrid ...
-            view.MZSpectraView.ColumnCount = spectrum.PeakCount + 1;
-            view.MZSpectraView.RowCount = 2;
-            view.MZSpectraView.Rows[0].DefaultCellStyle.BackColor = Color.LightYellow;
-            view.MZSpectraView.Rows[0].Cells[0].Value = String.Format("m/z peaks [ {0} ]", spectrum.PeakCount);
-            view.MZSpectraView.Rows[1].Cells[0].Value = "intensity";
+            _view.MZSpectraView.ColumnCount = spectrum.PeakCount + 1;
+            _view.MZSpectraView.RowCount = 2;
+            _view.MZSpectraView.Rows[0].DefaultCellStyle.BackColor = Color.LightYellow;
+            _view.MZSpectraView.Rows[0].Cells[0].Value = String.Format("m/z peaks [ {0} ]", spectrum.PeakCount);
+            _view.MZSpectraView.Rows[1].Cells[0].Value = "intensity";
 
             // ... and data chart
             Series mzSpectrum = new Series();
@@ -180,45 +138,35 @@ namespace DIMSS.Presenter
             {
                 mzSpectrum.Points.AddXY(spectrum.MZList[i], spectrum.IntensityList[i]);
 
-                view.MZSpectraView.Rows[0].Cells[i + 1].Value = spectrum.MZList[i].ToString();
-                view.MZSpectraView.Rows[1].Cells[i + 1].Value = spectrum.IntensityList[i].ToString();
+                _view.MZSpectraView.Rows[0].Cells[i + 1].Value = spectrum.MZList[i].ToString();
+                _view.MZSpectraView.Rows[1].Cells[i + 1].Value = spectrum.IntensityList[i].ToString();
             }
 
-            view.MZSpectraView.AutoResizeColumns();
+            _view.MZSpectraView.AutoResizeColumns();
 
-            view.ChromatogramChart.Series.Clear();
-            view.ChromatogramChart.Series.Add(mzSpectrum);
+            _view.ChromatogramChart.Series.Clear();
+            _view.ChromatogramChart.Series.Add(mzSpectrum);
 
-            view.ScansView.SelectedIndex = model.CurrentMZSpectrum - 1;
+            _view.ScansView.SelectedIndex = _model.CurrentMZSpectrum - 1;
 
             ShowChromatogram2D();
         }
         
-        private void OnClose(object sender, EventArgs e)
-        {
-            model.CloseParser();
-            view.ViewLoaded -= OnLoad;
-            view.ViewClosed -= OnClose;
-            view.PreviousScan -= OnPreviousScan;
-            view.NextScan -= OnNextScan;
-            view.NavigateScan -= OnNavigateScan;
-        }
-
         private void OnPreviousScan(object sender, EventArgs e)
         {
-            model.CurrentMZSpectrum--;
+            _model.CurrentMZSpectrum--;
             UpdateChart();
         }
 
         private void OnNextScan(object sender, EventArgs e)
         {
-            model.CurrentMZSpectrum++;
+            _model.CurrentMZSpectrum++;
             UpdateChart();
         }
 
         private void OnNavigateScan(object sender, EventArgs e)
         {
-            model.CurrentMZSpectrum = view.ScansView.SelectedIndex + 1;
+            _model.CurrentMZSpectrum = _view.ScansView.SelectedIndex + 1;
             UpdateChart();
         }
     }
