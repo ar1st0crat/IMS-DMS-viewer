@@ -3,12 +3,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DIMSS.Model;
 using System.Collections.Generic;
 
-namespace DIMSSTests
+namespace DIMSS.Tests
 {
     [TestClass]
     public class DMSModelTest
     {
         DMSModel model = new DMSModel();
+
+        [TestInitialize]
+        public void ClearMeasureParams()
+        {
+            model.MeasureParams.Clear();
+        }
 
         [TestMethod]
         public void WhenSpectrumNotFixed_FixSpectrum_ShouldReturnFixedSpectrum()
@@ -33,7 +39,7 @@ namespace DIMSSTests
             // Assert
             CollectionAssert.AreEqual(expected, spectrum);
         }
-
+        
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
         public void WhenSpectrumIsNull_FixSpectrum_ShouldThrowException()

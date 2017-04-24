@@ -6,8 +6,8 @@
     <ProjectGuid>{3B6097FA-1060-4802-B166-35661C23569A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DIMSSTests</RootNamespace>
-    <AssemblyName>DIMSSTests</AssemblyName>
+    <RootNamespace>DIMSS.Tests</RootNamespace>
+    <AssemblyName>DIMSS.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

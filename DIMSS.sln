@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIMSS", "DIMSS\DIMSS.csproj", "{078C9604-75E6-4F73-B186-5E9E172C8CAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIMSSTests", "DIMSSTests\DIMSSTests.csproj", "{3B6097FA-1060-4802-B166-35661C23569A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIMSS.Tests", "DIMSS.Tests\DIMSS.Tests.csproj", "{3B6097FA-1060-4802-B166-35661C23569A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
