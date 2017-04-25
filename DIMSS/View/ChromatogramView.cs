@@ -45,9 +45,6 @@ namespace DIMSS.View
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Loading is single-threaded. Just wait until entire file is loaded and chart is updated
-        /// </summary>
         private void ChromatogramForm_Load(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;

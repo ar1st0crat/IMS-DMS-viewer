@@ -157,7 +157,7 @@ namespace DIMSS.Presenter
 
             var chromatogramView = new ChromatogramView();
             var chromatogramPresenter = new ChromatogramPresenter(chromatogramView);
-            if (chromatogramPresenter.LoadMzXmlFile(ofd.FileName))
+            if (chromatogramPresenter.CheckFileCorrect(ofd.FileName))
             {
                 chromatogramView.ShowDialog();
             }

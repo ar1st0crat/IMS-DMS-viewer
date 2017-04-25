@@ -5,7 +5,7 @@
         /// <summary>
         /// The object that does all the heavy-lifting related to parsing mzxml files
         /// </summary>
-        private MZXMLParser mzXMLParser = new MZXMLParser();
+        private MZXMLParser _mzXMLParser = new MZXMLParser();
 
         /// <summary>
         /// Index of an MZ spectrum in chromatogram currently chosen for consideration
@@ -23,17 +23,17 @@
 
         public int ScanCount
         {
-            get { return mzXMLParser.ScanCount; }
+            get { return _mzXMLParser.ScanCount; }
         }
 
         public MZSpectrum GetCurrentMZSpectrum()
         {
-            return mzXMLParser.GetMZSpectrumByIndex(CurrentMZSpectrum);
+            return _mzXMLParser.GetMZSpectrumByIndex(CurrentMZSpectrum);
         }
 
         public MZSpectrum GetMZSpectrumByIndex(int idx)
         {
-            return mzXMLParser.GetMZSpectrumByIndex(idx);
+            return _mzXMLParser.GetMZSpectrumByIndex(idx);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@
         /// <returns>Success or error message</returns>
         public string Load(string mzxmlFilename)
         {
-            return mzXMLParser.Open(mzxmlFilename);
+            return _mzXMLParser.Open(mzxmlFilename);
         }
 
         #endregion

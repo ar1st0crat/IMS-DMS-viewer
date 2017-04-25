@@ -1,9 +1,12 @@
 ﻿using DIMSS.Model;
 using DIMSS.View;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Threading.Tasks;
 using SciColorMaps;
 
 namespace DIMSS.Presenter
@@ -14,6 +17,11 @@ namespace DIMSS.Presenter
         private readonly IChromatogramView _view;
 
         /// <summary>
+        /// In-memory (for better performance) bitmap containing chromatogram image
+        /// </summary>
+        private Bitmap _chromatogram2D;
+
+        /// <summary>
         /// Main colormap used for chromatogram display
         /// </summary>
         private readonly ColorMap _colorMap = new ColorMap("viridis");
@@ -21,24 +29,18 @@ namespace DIMSS.Presenter
         public ChromatogramPresenter(IChromatogramView view)
         {
             _view = view;
-            _view.ViewLoaded += OnLoad;
+            _view.ViewLoaded += OnChromatogramLoad;
             _view.PreviousScan += OnPreviousScan;
             _view.NextScan += OnNextScan;
             _view.NavigateScan += OnNavigateScan;
         }
 
-        private void OnLoad(object sender, EventArgs e)
-        {
-            UpdateChart();
-            ShowChromatogram2D();
-        }
-        
         /// <summary>
-        /// Method tries to load and parse mzXml file. In case of failure returns false.
+        /// Method checks if everything is alright with mzxml
         /// </summary>
         /// <param name="mzxmlFilename">The full name of mzXml file to parse</param>
         /// <returns>true if mzXml was loaded and parsed succesfully; false - otherwise</returns>
-        public bool LoadMzXmlFile(string mzxmlFilename)
+        public bool CheckFileCorrect(string mzxmlFilename)
         {
             string parseResult = _model.Load(mzxmlFilename);
 
@@ -54,68 +56,124 @@ namespace DIMSS.Presenter
                 return false;
             }
 
-            // retrieve the number of scans and fill the combobox with corresponding range of values for navigation
-            for (int i = 1; i <= _model.ScanCount; i++)
+            return true;
+        }
+
+        private async void OnChromatogramLoad(object sender, EventArgs e)
+        {
+            await LoadChromatogram();
+        }
+
+        /// <summary>
+        /// Asynchronous loading, showing and drawing of all things related to a chromatogram
+        /// </summary>
+        public async Task LoadChromatogram()
+        {
+            // Retrieve the number of scans and fill the combobox 
+            // with corresponding range of values for navigation
+            int scanCount = _model.ScanCount;
+
+            for (int i = 1; i <= scanCount; i++)
             {
                 _view.ScansView.Items.Add(i.ToString());
             }
 
             _view.ScansView.SelectedIndex = 0;
-            
-            return true;
+
+            // TAPping ))
+            var spectra = await LoadAllSpectraAsync(scanCount);
+
+            // keep TAPping
+            await DrawChromatogramAsync(spectra);
+
+            // update left panel
+            UpdateChart();
         }
-        
-        private void ShowChromatogram2D()
+
+        private Task<List<MZSpectrum>> LoadAllSpectraAsync(int scanCount)
         {
-            int scanCount = _model.ScanCount;
-
-            int width = 600;
-            int height = _view.ChromatogramImage.Height;
-
-            // create empty bitmap and fill it with black color
-            var chromatogram2D = new Bitmap(width, height);
-
-            for (int i = 0; i < chromatogram2D.Width; i++)
+            return Task.Run(() =>
             {
-                for (int j = 0; j < chromatogram2D.Height; j++)
+                List<MZSpectrum> spectra = new List<MZSpectrum>();
+
+                for (int scanNo = 1; scanNo <= scanCount; scanNo++)
                 {
-                    chromatogram2D.SetPixel(i, j, _colorMap.GetColorByNumber(0));
+                    MZSpectrum spectrum = _model.GetMZSpectrumByIndex(scanNo);
+                    if (spectrum == null)
+                    {
+                        // unlikely, but if this happens then at least display upper part of chromatogram
+                        // that was correctly parsed by mzxmlparser
+                        break;
+                    }
+                    spectra.Add(spectrum);
                 }
-            }
 
-            // get all spectra and blit them onto the bitmap
-            int step = scanCount / height;
+                return spectra;
+            });
+        }
 
-            for (int scanNo = 1, vPos = 0; vPos < height; scanNo += step, vPos++)
+        private Task DrawChromatogramAsync(List<MZSpectrum> spectra)
+        {
+            return Task.Run(() =>
             {
-                MZSpectrum spectrum = _model.GetMZSpectrumByIndex(scanNo);
-                if (spectrum == null)
+                int scanCount = spectra.Count;
+
+                int width = (int)spectra.Max(s => s.MZList.Max()) + 1;
+                int height = scanCount;
+
+                // create empty bitmap and fill it first with default color...
+                _chromatogram2D = new Bitmap(width, height);
+
+                for (int i = 0; i < _chromatogram2D.Width; i++)
                 {
-                    // unlikely, but who knows...
-                    return;
+                    for (int j = 0; j < _chromatogram2D.Height; j++)
+                    {
+                        _chromatogram2D.SetPixel(i, j, _colorMap.GetColorByNumber(0));
+                    }
                 }
 
-                for (int i = 0; i < spectrum.PeakCount; i++)
+                // ...now fill chromatogram with meaningful colors
+                int colorScaleFactor = 500;
+
+                for (int scanNo = 0; scanNo < scanCount; scanNo++)
                 {
-                    double x = spectrum.MZList[i];
-                    double y = spectrum.IntensityList[i];
+                    var spectrum = spectra[scanNo];
 
-                    chromatogram2D.SetPixel((int)x, vPos, _colorMap.GetColor((float)y / 500));
+                    for (int i = 0; i < spectrum.PeakCount; i++)
+                    {
+                        int x = (int)spectrum.MZList[i];
+                        float y = (float)spectrum.IntensityList[i];
+
+                        _chromatogram2D.SetPixel(x, scanNo,
+                            _colorMap.GetColor(y / colorScaleFactor));
+                    }
                 }
-            }
 
-            // show current spectrum line on chromatogram
+                _view.ChromatogramImage.Image = _chromatogram2D;
+            });
+        }
+
+        /// <summary>
+        /// Update right panel of the window:
+        /// Show current spectrum line on chromatogram without redrawing the entire chromatogram
+        /// </summary>
+        private void UpdateChromatogram2D()
+        {
             MZSpectrum curSpectrum = _model.GetMZSpectrumByIndex(_model.CurrentMZSpectrum);
 
-            for (int i = 0; i < width; i++)
+            var markedChromatogram2D = new Bitmap(_chromatogram2D);
+
+            for (int i = 0; i < markedChromatogram2D.Width; i++)
             {
-                chromatogram2D.SetPixel(i, _model.CurrentMZSpectrum / step, Color.White);
+                markedChromatogram2D.SetPixel(i, _model.CurrentMZSpectrum, Color.White);
             }
 
-            // fit the entire chromatogram to the pictureBox area
-            _view.ChromatogramImage.Image = chromatogram2D;
+            _view.ChromatogramImage.Image = markedChromatogram2D;
         }
 
+        /// <summary>
+        /// Update left panel of the window (datagrid and chart with currently selected spectrum)
+        /// </summary>
         private void UpdateChart()
         {
             MZSpectrum spectrum = _model.GetCurrentMZSpectrum();
@@ -144,31 +202,34 @@ namespace DIMSS.Presenter
             }
 
             _view.MZSpectraView.AutoResizeColumns();
-
             _view.ChromatogramChart.Series.Clear();
             _view.ChromatogramChart.Series.Add(mzSpectrum);
 
             _view.ScansView.SelectedIndex = _model.CurrentMZSpectrum - 1;
-
-            ShowChromatogram2D();
         }
         
         private void OnPreviousScan(object sender, EventArgs e)
         {
             _model.CurrentMZSpectrum--;
-            UpdateChart();
+            UpdatePanels();
         }
 
         private void OnNextScan(object sender, EventArgs e)
         {
             _model.CurrentMZSpectrum++;
-            UpdateChart();
+            UpdatePanels();
         }
 
         private void OnNavigateScan(object sender, EventArgs e)
         {
             _model.CurrentMZSpectrum = _view.ScansView.SelectedIndex + 1;
+            UpdatePanels();
+        }
+
+        private void UpdatePanels()
+        {
             UpdateChart();
+            UpdateChromatogram2D();
         }
     }
 }
