@@ -58,18 +58,19 @@
             chartArea1.AxisY.Minimum = 0D;
             chartArea1.Name = "ChartArea1";
             this.chartChromatogram.ChartAreas.Add(chartArea1);
-            this.chartChromatogram.Location = new System.Drawing.Point(7, 7);
-            this.chartChromatogram.Margin = new System.Windows.Forms.Padding(7);
+            this.chartChromatogram.Location = new System.Drawing.Point(9, 9);
+            this.chartChromatogram.Margin = new System.Windows.Forms.Padding(9, 9, 9, 9);
             this.chartChromatogram.Name = "chartChromatogram";
-            this.chartChromatogram.Size = new System.Drawing.Size(397, 385);
+            this.chartChromatogram.Size = new System.Drawing.Size(530, 474);
             this.chartChromatogram.TabIndex = 0;
             this.chartChromatogram.Text = "chartChromatogram";
             // 
             // buttonPrev
             // 
-            this.buttonPrev.Location = new System.Drawing.Point(3, 3);
+            this.buttonPrev.Location = new System.Drawing.Point(4, 4);
+            this.buttonPrev.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonPrev.Name = "buttonPrev";
-            this.buttonPrev.Size = new System.Drawing.Size(68, 37);
+            this.buttonPrev.Size = new System.Drawing.Size(91, 46);
             this.buttonPrev.TabIndex = 2;
             this.buttonPrev.Text = "Prev";
             this.buttonPrev.UseVisualStyleBackColor = true;
@@ -77,9 +78,10 @@
             // 
             // buttonNext
             // 
-            this.buttonNext.Location = new System.Drawing.Point(77, 3);
+            this.buttonNext.Location = new System.Drawing.Point(103, 4);
+            this.buttonNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonNext.Name = "buttonNext";
-            this.buttonNext.Size = new System.Drawing.Size(68, 37);
+            this.buttonNext.Size = new System.Drawing.Size(91, 46);
             this.buttonNext.TabIndex = 3;
             this.buttonNext.Text = "Next";
             this.buttonNext.UseVisualStyleBackColor = true;
@@ -87,9 +89,10 @@
             // 
             // buttonGoTo
             // 
-            this.buttonGoTo.Location = new System.Drawing.Point(151, 3);
+            this.buttonGoTo.Location = new System.Drawing.Point(202, 4);
+            this.buttonGoTo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonGoTo.Name = "buttonGoTo";
-            this.buttonGoTo.Size = new System.Drawing.Size(68, 37);
+            this.buttonGoTo.Size = new System.Drawing.Size(91, 46);
             this.buttonGoTo.TabIndex = 5;
             this.buttonGoTo.Text = "Go To";
             this.buttonGoTo.UseVisualStyleBackColor = true;
@@ -99,9 +102,10 @@
             // 
             this.comboBoxScans.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBoxScans.FormattingEnabled = true;
-            this.comboBoxScans.Location = new System.Drawing.Point(225, 3);
+            this.comboBoxScans.Location = new System.Drawing.Point(301, 12);
+            this.comboBoxScans.Margin = new System.Windows.Forms.Padding(4, 12, 4, 4);
             this.comboBoxScans.Name = "comboBoxScans";
-            this.comboBoxScans.Size = new System.Drawing.Size(67, 28);
+            this.comboBoxScans.Size = new System.Drawing.Size(88, 33);
             this.comboBoxScans.TabIndex = 6;
             // 
             // dataGridViewMZSpectra
@@ -110,9 +114,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewMZSpectra.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewMZSpectra.Location = new System.Drawing.Point(3, 79);
+            this.dataGridViewMZSpectra.Location = new System.Drawing.Point(4, 96);
+            this.dataGridViewMZSpectra.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataGridViewMZSpectra.Name = "dataGridViewMZSpectra";
-            this.dataGridViewMZSpectra.Size = new System.Drawing.Size(399, 84);
+            this.dataGridViewMZSpectra.Size = new System.Drawing.Size(532, 103);
             this.dataGridViewMZSpectra.TabIndex = 7;
             // 
             // pictureBoxChromatogram
@@ -120,10 +125,11 @@
             this.pictureBoxChromatogram.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxChromatogram.Location = new System.Drawing.Point(414, 3);
+            this.pictureBoxChromatogram.Location = new System.Drawing.Point(552, 4);
+            this.pictureBoxChromatogram.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBoxChromatogram.Name = "pictureBoxChromatogram";
             this.tableLayoutPanel3.SetRowSpan(this.pictureBoxChromatogram, 2);
-            this.pictureBoxChromatogram.Size = new System.Drawing.Size(405, 565);
+            this.pictureBoxChromatogram.Size = new System.Drawing.Size(540, 695);
             this.pictureBoxChromatogram.TabIndex = 2;
             this.pictureBoxChromatogram.TabStop = false;
             // 
@@ -134,9 +140,10 @@
             this.flowLayoutPanel1.Controls.Add(this.buttonNext);
             this.flowLayoutPanel1.Controls.Add(this.buttonGoTo);
             this.flowLayoutPanel1.Controls.Add(this.comboBoxScans);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(4, 18);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(385, 57);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(513, 70);
             this.flowLayoutPanel1.TabIndex = 8;
             // 
             // tableLayoutPanel3
@@ -150,12 +157,13 @@
             this.tableLayoutPanel3.Controls.Add(this.chartChromatogram, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.pictureBoxChromatogram, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel4, 0, 1);
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(16, 15);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(822, 571);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(1096, 703);
             this.tableLayoutPanel3.TabIndex = 9;
             // 
             // tableLayoutPanel4
@@ -167,21 +175,23 @@
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.Controls.Add(this.flowLayoutPanel1, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.dataGridViewMZSpectra, 0, 1);
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 402);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(4, 496);
+            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 2;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(405, 166);
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 111F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(540, 203);
             this.tableLayoutPanel4.TabIndex = 3;
             // 
-            // ChromatogramForm
+            // ChromatogramView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(840, 590);
+            this.ClientSize = new System.Drawing.Size(1120, 726);
             this.Controls.Add(this.tableLayoutPanel3);
-            this.Name = "ChromatogramForm";
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Name = "ChromatogramView";
             this.Text = "ChromatogramForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ChromatogramForm_FormClosed);
             this.Load += new System.EventHandler(this.ChromatogramForm_Load);

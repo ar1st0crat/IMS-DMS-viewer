@@ -6,14 +6,14 @@ using System.Collections.Generic;
 namespace DIMSS.Tests
 {
     [TestClass]
-    public class DMSModelTest
+    public class DMSTest
     {
-        DMSModel model = new DMSModel();
+        DMS _dms = new DMS();
 
         [TestInitialize]
         public void ClearMeasureParams()
         {
-            model.MeasureParams.Clear();
+            _dms.MeasureParams.Clear();
         }
 
         [TestMethod]
@@ -23,7 +23,7 @@ namespace DIMSS.Tests
             List<int> spectrum = new List<int>() { 1, 0, 4, -5, -32768, 32767, -32768, -32768, -32767, -15, -32767 };
             List<int> expected = new List<int>() { 1, 0, 4, -5, -32768, 32767, 32767, 32767, -32767, -15, -32767 };
             // Act
-            model.FixSpectrum(spectrum);
+            _dms.FixSpectrum(spectrum);
             // Assert
             CollectionAssert.AreEqual(expected, spectrum);
         }
@@ -35,7 +35,7 @@ namespace DIMSS.Tests
             List<int> spectrum = new List<int>() { -32768 };
             List<int> expected = new List<int>() { -32768 };
             // Act
-            model.FixSpectrum(spectrum);
+            _dms.FixSpectrum(spectrum);
             // Assert
             CollectionAssert.AreEqual(expected, spectrum);
         }
@@ -44,10 +44,8 @@ namespace DIMSS.Tests
         [ExpectedException(typeof(NullReferenceException))]
         public void WhenSpectrumIsNull_FixSpectrum_ShouldThrowException()
         {
-            // Arrange
-            List<int> nullspectrum = null;
-            // Act, Assert
-            model.FixSpectrum(nullspectrum);
+            // Arrange, Act, Assert
+            _dms.FixSpectrum(null);
         }
 
         [TestMethod]
@@ -55,9 +53,9 @@ namespace DIMSS.Tests
         {
             // Arrange
             float fromV = 0.0f, toV = 0.0f;
-            model.MeasureParams.Add(@"Param1=12;From,V = 0,003; To,V=0,15; Param2=,76");
+            _dms.MeasureParams.Add(@"Param1=12;From,V = 0,003; To,V=0,15; Param2=,76");
             // Act
-            model.ParseMeasureParams(0, ref fromV, ref toV);
+            _dms.ParseMeasureParams(0, ref fromV, ref toV);
             // Assert
             Assert.AreEqual(0.003, fromV, 1e-7);
             Assert.AreEqual(0.15, toV, 1e-7);
@@ -68,9 +66,9 @@ namespace DIMSS.Tests
         {
             // Arrange
             float fromV = 0.0f, toV = 0.0f;
-            model.MeasureParams.Add(@"Param1=12;From,V = 0.03; To,V=0.15; Param2=,76");
+            _dms.MeasureParams.Add(@"Param1=12;From,V = 0.03; To,V=0.15; Param2=,76");
             // Act
-            model.ParseMeasureParams(0, ref fromV, ref toV);
+            _dms.ParseMeasureParams(0, ref fromV, ref toV);
             // Assert
             Assert.AreEqual(0.03, fromV, 1e-7);
             Assert.AreEqual(0.15, toV, 1e-7);
@@ -81,9 +79,9 @@ namespace DIMSS.Tests
         {
             // Arrange
             float fromV = 2.0f, toV = 0.0f;
-            model.MeasureParams.Add(@"Param1=12; Param2=0,76");
+            _dms.MeasureParams.Add(@"Param1=12; Param2=0,76");
             // Act
-            model.ParseMeasureParams(0, ref fromV, ref toV);
+            _dms.ParseMeasureParams(0, ref fromV, ref toV);
             // Assert
             Assert.AreEqual(2.0, fromV, 1e-7);
             Assert.AreEqual(0.0, toV, 1e-7);

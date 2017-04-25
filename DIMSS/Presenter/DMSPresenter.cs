@@ -9,7 +9,7 @@ namespace DIMSS.Presenter
 {
     class DMSPresenter
     {
-        private readonly DMSModel _model = new DMSModel();
+        private readonly DMS _model = new DMS();
         private readonly IDMSView _view;
 
         /// <summary>
@@ -66,12 +66,12 @@ namespace DIMSS.Presenter
 
             if (e.Item.Checked)
             {
-                Series s = new Series(e.Item.Text);
-                s.ChartType = _view.CurrentChartType;
+                var series = new Series(e.Item.Text);
+                series.ChartType = _view.CurrentChartType;
 
                 try
                 {
-                    _view.ChartDIMS.Series.Add(s);
+                    _view.ChartDIMS.Series.Add(series);
                 }
                 catch (ArgumentException argEx)
                 {
@@ -97,17 +97,17 @@ namespace DIMSS.Presenter
                     _model.ParseMeasureParams(serieNo, ref fromV, ref toV);
 
                     // ... and map x coordinates into range [ fromV, toV ]
-                    for (int j = 0; j < DMSModel.SpecSize; j++)
+                    for (int j = 0; j < DMS.SpecSize; j++)
                     {
                         _view.ChartDIMS.Series[_checkedList.Count - 1].Points.AddXY(
-                            fromV + j * (toV - fromV) / DMSModel.SpecSize, _model.Spectra[serieNo][j]);
+                            fromV + j * (toV - fromV) / DMS.SpecSize, _model.Spectra[serieNo][j]);
                     }
                 }
 
                 // if we have both x and y coordinates then everything is pretty simple
                 else
                 {
-                    for (int j = 0; j < DMSModel.SpecSize; j++)
+                    for (int j = 0; j < DMS.SpecSize; j++)
                     {
                         _view.ChartDIMS.Series[_checkedList.Count - 1].Points.AddXY(
                             _model.SpectralPoints[serieNo][j], _model.Spectra[serieNo][j]);

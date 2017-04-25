@@ -1,6 +1,6 @@
 ﻿namespace DIMSS.Model
 {
-    public class ChromatogramModel
+    public class Chromatogram
     {
         /// <summary>
         /// The object that does all the heavy-lifting related to parsing mzxml files
@@ -13,7 +13,7 @@
         public int CurrentMZSpectrum { get; set; }
 
 
-        public ChromatogramModel()
+        public Chromatogram()
         {
             // We start with the spectrum #1 (the scan #0 contains metainfo)
             CurrentMZSpectrum = 1;

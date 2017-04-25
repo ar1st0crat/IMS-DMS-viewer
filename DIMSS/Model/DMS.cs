@@ -5,23 +5,18 @@ using System.Text.RegularExpressions;
 
 namespace DIMSS.Model
 {
-    /* DMS spectra are read from CSV files.
-     * The corresponding CSV file structure should be as follows:
-     *          
-     *          1) MetaInfo; spec1; spec2; spec3; spec4; ...;
-     *          
-     *          or
-     * 
-     *          2) MetaInfo;; spec1; x1; spec2; x2; spec3; x3; ...;
-     *          
-     * 
-     *  This version of DIMSS deals with constant spectrum dimension which we define in SpecSize
-     */
-
     /// <summary>
     /// Model class for the DMS main form
+    /// 
+    /// DMS spectra are read from CSV files.
+    /// The corresponding CSV file structure should be as follows:
+    ///         1) MetaInfo; spec1; spec2; spec3; spec4; ...;
+    ///         or
+    ///         2) MetaInfo;; spec1; x1; spec2; x2; spec3; x3; ...;
+    ///
+    /// This version of DIMSS deals with constant spectrum dimension which we define in SpecSize
     /// </summary>
-    public class DMSModel
+    public class DMS
     {
         /// <summary>
         /// By default the size of a spectrum is 2^11 = 2048 samples
@@ -44,7 +39,7 @@ namespace DIMSS.Model
         public List<List<float>> SpectralPoints { get; private set; }
         
 
-        public DMSModel()
+        public DMS()
         {
             MeasureParams = new List<string>();
             Spectra = new List<List<int>>();
@@ -52,9 +47,9 @@ namespace DIMSS.Model
         }
 
         /// <summary>
-        /// Fix the dims spectrum: invert the sign of corrupted samples 
+        /// Fix the dms spectrum: invert the sign of corrupted samples 
         /// </summary>
-        /// <param name="spectrum">DIMS spectrum list</param>
+        /// <param name="spectrum">DMS spectrum list</param>
         public void FixSpectrum(List<int> spectrum)
         {
             for (int i = 1; i < spectrum.Count; i++)
@@ -126,7 +121,7 @@ namespace DIMSS.Model
                     {
                         spec.Add(int.Parse(csvSamples.ElementAt(j * 2 + 2)));
                         specPoints.Add(float.Parse(csvSamples.ElementAt(j * 2 + 3),
-                                                            System.Globalization.CultureInfo.InvariantCulture));
+                                                       System.Globalization.CultureInfo.InvariantCulture));
                     }
                 }
 

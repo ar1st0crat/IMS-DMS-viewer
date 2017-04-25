@@ -1,12 +1,16 @@
-﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace DIMSS.Model
 {
+    /// <summary>
+    /// Class repsonsible for efficient loading, parsing and accessing 
+    /// particular spectra from large mzxml files
+    /// </summary>
     class MZXMLParser
     {
         #region string constants
@@ -14,12 +18,22 @@ namespace DIMSS.Model
         /// <summary>
         /// Message to show when datafile was loaded succesfully
         /// </summary>
-        public const string LoadSuccessMessage = "MzXml file loaded OK!";
+        public const string LoadSuccessMessage = "Mzxml file was loaded and parsed succesfully!";
 
         /// <summary>
         /// Message to show when the fragment of mzxml file could not be read or parsed
         /// </summary>
-        public const string ReadErrorMessage = "Could not read mzXml file!";
+        public const string ReadErrorMessage = "Error: could not read mzXml file!";
+
+        /// <summary>
+        /// Message to show when an mzxml file does not exist
+        /// </summary>
+        public const string NotExistMessage = "Error: mzxml file does not exist!";
+
+        /// <summary>
+        /// Message to show when mzxml file violates its xml schema
+        /// </summary>
+        public const string FileCorruptedMessage = "Error: mzxml file is corrupted!";
 
         #endregion
 
@@ -28,6 +42,14 @@ namespace DIMSS.Model
         /// </summary>
         private string _xmlContent;
 
+        /// <summary>
+        /// Hash added for efficiency:
+        /// 
+        /// Key: scanID;
+        /// Value: base64-coded string containing info about mz spectra (mz peaks and intensities);
+        /// 
+        /// Keys and values are extracted from an mzxml file.
+        /// </summary>
         private Dictionary<int, string> _codedSpectraDictionary = new Dictionary<int, string>();
 
         /// <summary>
@@ -44,7 +66,7 @@ namespace DIMSS.Model
         {
             if (!File.Exists(mzxmlFilename))
             {
-                return "MzXML file does not exist!";
+                return NotExistMessage;
             }
 
             _xmlContent = File.ReadAllText(mzxmlFilename);
@@ -56,16 +78,19 @@ namespace DIMSS.Model
             }
             catch (XmlException)
             {
-                return "MzXML file is corrupted!";
+                return FileCorruptedMessage;
             }
 
             // directly working with a string instead of XmlDocument is much faster
             // (although the code is less readable)
-            var scanCountPos = _xmlContent.IndexOf("msRun scanCount=") + 17;
+            var countTag = "msRun scanCount=";
+            var scanCountPos = _xmlContent.IndexOf(countTag) + countTag.Length + 1;
             var endPos = _xmlContent.IndexOf('"', scanCountPos);
 
+            // set ScanCount right away
             ScanCount = int.Parse(_xmlContent.Substring(scanCountPos, endPos - scanCountPos));
 
+            // iterate sequentially across all nodes containg info regarding mz peaks
             var peaksPos = 0;
             for (int idx = 1; idx <= ScanCount; idx++)
             {
@@ -73,6 +98,7 @@ namespace DIMSS.Model
                 peaksPos = _xmlContent.IndexOf(">", peaksPos) + 1;
                 endPos = _xmlContent.IndexOf("</peaks>", peaksPos);
 
+                // add base64-coded peaks and intensities to hash
                 _codedSpectraDictionary[idx] = _xmlContent.Substring(peaksPos, endPos - peaksPos);
             }
 
@@ -89,6 +115,7 @@ namespace DIMSS.Model
             // try out all loadings and parsings
             try
             {
+                // Retrieve base64-coded string efficiently from hash
                 string peaks = _codedSpectraDictionary[idx];
 
                 // Firstly, decode byte array from base64 string
@@ -96,7 +123,6 @@ namespace DIMSS.Model
 
                 // Secondly, decompress the decoded byte array using the SharpZipLib dll
                 Stream stream = new MemoryStream(byteArray);
-
                 byte[] decodedBytes = DecompressZlib(stream);
 
                 MZSpectrum spec = new MZSpectrum();
@@ -125,9 +151,10 @@ namespace DIMSS.Model
 
                 return spec;
             }
-            catch (Exception ex)
+            // not processing this error here: 
+            // just set the resulting spectrum as null: the callee will handle this error more correctly
+            catch (Exception)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message);
                 return null;
             }
         }
@@ -141,9 +168,9 @@ namespace DIMSS.Model
         {
             byte[] result;
 
-            using (MemoryStream outStream = new MemoryStream())
+            using (var outStream = new MemoryStream())
             {
-                using (InflaterInputStream inf = new InflaterInputStream(source))
+                using (var inf = new InflaterInputStream(source))
                 {
                     inf.CopyTo(outStream);
                 }

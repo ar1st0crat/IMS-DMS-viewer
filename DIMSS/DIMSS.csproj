@@ -75,8 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\ChromatogramModel.cs" />
-    <Compile Include="Model\DMSModel.cs" />
+    <Compile Include="Model\Chromatogram.cs" />
+    <Compile Include="Model\DMS.cs" />
     <Compile Include="Model\MZXMLParser.cs" />
     <Compile Include="Presenter\ChromatogramPresenter.cs" />
     <Compile Include="Presenter\DMSPresenter.cs" />

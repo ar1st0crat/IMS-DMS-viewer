@@ -10,13 +10,13 @@ namespace DIMSS.Presenter
 {
     class ChromatogramPresenter
     {
-        private readonly ChromatogramModel _model = new ChromatogramModel();
+        private readonly Chromatogram _model = new Chromatogram();
         private readonly IChromatogramView _view;
 
         /// <summary>
         /// Main colormap used for chromatogram display
         /// </summary>
-        private readonly ColorMap colorMap = new ColorMap("afmhot");
+        private readonly ColorMap _colorMap = new ColorMap("viridis");
 
         public ChromatogramPresenter(IChromatogramView view)
         {
@@ -54,8 +54,8 @@ namespace DIMSS.Presenter
                 return false;
             }
 
-            // retrieve the number of scans and fill a combobox with corresponding range of values for navigation
-            for (int i = 1; i < _model.ScanCount; i++)
+            // retrieve the number of scans and fill the combobox with corresponding range of values for navigation
+            for (int i = 1; i <= _model.ScanCount; i++)
             {
                 _view.ScansView.Items.Add(i.ToString());
             }
@@ -69,16 +69,17 @@ namespace DIMSS.Presenter
         {
             int scanCount = _model.ScanCount;
 
-            int width = 700, height = 600;
+            int width = 600;
+            int height = _view.ChromatogramImage.Height;
 
             // create empty bitmap and fill it with black color
-            Bitmap chromatogram2D = new Bitmap(width, height);
+            var chromatogram2D = new Bitmap(width, height);
 
             for (int i = 0; i < chromatogram2D.Width; i++)
             {
                 for (int j = 0; j < chromatogram2D.Height; j++)
                 {
-                    chromatogram2D.SetPixel(i, j, colorMap.GetColorByNumber(0));
+                    chromatogram2D.SetPixel(i, j, _colorMap.GetColorByNumber(0));
                 }
             }
 
@@ -99,7 +100,7 @@ namespace DIMSS.Presenter
                     double x = spectrum.MZList[i];
                     double y = spectrum.IntensityList[i];
 
-                    chromatogram2D.SetPixel((int)x, vPos, colorMap.GetColor((float)y / 500));
+                    chromatogram2D.SetPixel((int)x, vPos, _colorMap.GetColor((float)y / 500));
                 }
             }
 
@@ -128,7 +129,7 @@ namespace DIMSS.Presenter
             _view.MZSpectraView.ColumnCount = spectrum.PeakCount + 1;
             _view.MZSpectraView.RowCount = 2;
             _view.MZSpectraView.Rows[0].DefaultCellStyle.BackColor = Color.LightYellow;
-            _view.MZSpectraView.Rows[0].Cells[0].Value = String.Format("m/z peaks [ {0} ]", spectrum.PeakCount);
+            _view.MZSpectraView.Rows[0].Cells[0].Value = string.Format("m/z peaks [ {0} ]", spectrum.PeakCount);
             _view.MZSpectraView.Rows[1].Cells[0].Value = "intensity";
 
             // ... and data chart
