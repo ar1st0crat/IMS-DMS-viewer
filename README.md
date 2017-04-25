@@ -12,9 +12,9 @@ Main features of the program are:
 ![pic1](https://github.com/ar1st0crat/IMS-DMS-viewer/blob/master/screenshots/1.png)
 ![pic2](https://github.com/ar1st0crat/IMS-DMS-viewer/blob/master/screenshots/2.png)
 
-<br/>
+
 [Russian]
-> Программа IMS-DMS-Viewerслужит для визуализации и исследования спектров ионной мобильности (IMS-хроматограмм и DMS).
+> Программа IMS-DMS-Viewer служит для визуализации и исследования спектров ионной мобильности (IMS-хроматограмм и DMS).
 
 Возможности программы:
 - автоматическая загрузка и разбор всех csv-файлов со спектральными данными ДМС и параметрами измерений из любого указанного каталога на компьютере исследователя (пункт меню Add Directory...). При этом программа подхватывает все файлы и из его вложенных подкаталогов;
